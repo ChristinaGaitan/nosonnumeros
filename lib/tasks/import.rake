@@ -43,27 +43,47 @@ namespace :import do
         if key == :semana_epidemiologica_defunciones || key == :semana_epidemiologica_positivos
           # String values
           new_value = value&.empty? ? nil : value
-          # if value&.empty?
-          #   new_value = nil
-          # else
-          #   new_value = value
-          # end
         else
           # Date values
           new_value = value.is_a?(String) ? nil : value
-          # if value.is_a?(String)
-          #   new_value = nil
-          # else
-          #   new_value = value
-          # end
         end
         fechas_hash[key] = new_value
       end
-
       paciente.informacion_temporal = InformacionTemporal.new(fechas_hash)
-      # puts('==================')
-      # puts(paciente.id_inicio_sintomas)
-      # puts(paciente.informacion_temporal.inicio_sintomas)
+
+      hospitalaria_hash = {
+        institucion_tratante: paciente_data['Institución tratante'],
+        unidad_notificante: paciente_data['Unidad notificante'],
+        toma_muestra_estado: paciente_data['Toma de muestra en el ESTADO'],
+        status_dia_previo: paciente_data['Estatus día previo'],
+        tipo_manejo: paciente_data['Tipo de manejo'],
+        status_paciente: paciente_data['Estatus del paciente'],
+        resultado_laboratorio: paciente_data['Resultado de laboratorio'],
+        requirio_intubacion: paciente_data['Pacientes que requirieron intubación'],
+        ingreso_uci: paciente_data['Pacientes que ingresaron a UCI'],
+        diagnostico_neumonia: paciente_data['Diagnóstico clínico de Neumonía'],
+        diagnostico_probable: paciente_data['Diagnóstico probable'],
+      }
+
+      hospitalaria_hash.each do |key, value|
+        new_value = nil
+        if key == :toma_muestra_estado || key == :requirio_intubacion || key == :ingreso_uci || key == :diagnostico_neumonia
+          # Boolean values
+          new_value = value == 'SI'
+        else
+          # String values
+          new_value = value&.empty? ? nil : value
+        end
+        hospitalaria_hash[key] = new_value
+      end
+
+      puts(hospitalaria_hash)
+      paciente.informacion_hospitalaria = InformacionHospitalaria.new(hospitalaria_hash)
+
+      puts('==================')
+      puts(paciente.id_inicio_sintomas)
+      puts(paciente.informacion_temporal.inicio_sintomas)
+      puts(paciente.informacion_hospitalaria.institucion_tratante)
       paciente.save!
     end
   end
