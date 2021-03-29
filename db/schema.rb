@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_26_223143) do
+ActiveRecord::Schema.define(version: 2021_03_29_191527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "informacion_hospitalaria", force: :cascade do |t|
+    t.bigint "paciente_id"
+    t.string "institucion_tratante"
+    t.string "unidad_notificante"
+    t.boolean "toma_muestra_estado"
+    t.string "status_dia_previo"
+    t.string "tipo_manejo"
+    t.string "status_paciente"
+    t.string "resultado_laboratorio"
+    t.boolean "requirio_intubacion"
+    t.boolean "ingreso_uci"
+    t.boolean "diagnostico_neumonia"
+    t.string "diagnostico_probable"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["paciente_id"], name: "index_informacion_hospitalaria_on_paciente_id"
+  end
 
   create_table "informacion_temporals", force: :cascade do |t|
     t.bigint "paciente_id"
