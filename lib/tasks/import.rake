@@ -1,16 +1,13 @@
 namespace :import do
-  desc "Import data from spreadsheet" # update this line
+  desc "Import data from spreadsheet"
   task data: :environment do
-    puts 'Importing Data' # add this line
+    puts 'Importing Data'
     data = Roo::Spreadsheet.open('lib/CENSO_DATOS_ABIERTOS_GENERAL_COVID_2020.xlsx') # open spreadsheet
     headers = data.row(1) # get header row
-
-    nil_values = ['NA', 'Temporal', '', 'No aplica']
 
     data.each_with_index do |row, idx|
       next if idx == 0 # skip header
 
-      # create hash from headers and cells
       paciente_data = Hash[[headers, row].transpose]
 
       # =====================================
@@ -114,17 +111,42 @@ namespace :import do
       }
 
       sintomas_hash.each do |key, value|
-        new_value = value == 'SE IGNORA' ? nil : value == 'SI'
+        new_value = value == 'SE IGNORA' ? nil : (value == 'SI' || value == 'S')
         sintomas_hash[key] = new_value
       end
 
-      paciente.sintoma = Sintoma.new(sintomas_hash)
+      paciente.sintomas = Sintomas.new(sintomas_hash)
+
+      # =====================================
+      # Enfermedades Previas
+      # =====================================
+      enfermedades_hash = {
+        diabetes: paciente_data['Diabetes'],
+        epoc: paciente_data['EPOC'],
+        asma: paciente_data['Asma'],
+        inmunosupresion: paciente_data['Inmunosupresión'],
+        hipertension: paciente_data['Hipertensión'],
+        vih_sida: paciente_data['VIH/SIDA'],
+        otra_condicion: paciente_data['Otra condición'],
+        enfermedad_cardiaca: paciente_data['Enfermedad cardiaca'],
+        obesidad: paciente_data['Obesidad'],
+        insuficiencia_renal_cronica: paciente_data['Insuficiencia renal crónica'],
+        tabaquismo: paciente_data['Tabaquismo'],
+      }
+
+      enfermedades_hash.each do |key, value|
+        new_value = value == 'SE IGNORA' ? nil : (value == 'SI' || value == 'S')
+        enfermedades_hash[key] = new_value
+      end
+
+      paciente.enfermedades_previas = EnfermedadesPrevias.new(enfermedades_hash)
 
       puts('==================')
       puts(paciente.id_inicio_sintomas)
       puts(paciente.informacion_temporal.inicio_sintomas)
       puts(paciente.informacion_hospitalaria.institucion_tratante)
-      puts(paciente.sintoma.fiebre)
+      puts(paciente.sintomas.fiebre)
+      puts(paciente.enfermedades_previas.diabetes)
       paciente.save!
     end
   end
