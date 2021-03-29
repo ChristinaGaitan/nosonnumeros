@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_29_221432) do
+ActiveRecord::Schema.define(version: 2021_03_29_225254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "enfermedades_previas", force: :cascade do |t|
+    t.bigint "paciente_id"
+    t.boolean "diabetes"
+    t.boolean "epoc"
+    t.boolean "asma"
+    t.boolean "inmunosupresion"
+    t.boolean "hipertension"
+    t.boolean "vih_sida"
+    t.boolean "otra_condicion"
+    t.boolean "enfermedad_cardiaca"
+    t.boolean "obesidad"
+    t.boolean "insuficiencia_renal_cronica"
+    t.boolean "tabaquismo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["paciente_id"], name: "index_enfermedades_previas_on_paciente_id"
+  end
 
   create_table "informacion_hospitalaria", force: :cascade do |t|
     t.bigint "paciente_id"
