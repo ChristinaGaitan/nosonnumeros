@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_29_191527) do
+ActiveRecord::Schema.define(version: 2021_03_29_221432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,33 @@ ActiveRecord::Schema.define(version: 2021_03_29_191527) do
     t.string "ocupacion"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "sintomas", force: :cascade do |t|
+    t.bigint "paciente_id"
+    t.boolean "fiebre"
+    t.boolean "tos"
+    t.boolean "odinofagia"
+    t.boolean "disnea"
+    t.boolean "irritabilidad"
+    t.boolean "diarrea"
+    t.boolean "dolor_toracico"
+    t.boolean "escalofrios"
+    t.boolean "cefalea"
+    t.boolean "mialgias"
+    t.boolean "artralgias"
+    t.boolean "ataque_estado_general"
+    t.boolean "polipnea"
+    t.boolean "vomito"
+    t.boolean "dolor_abdminal"
+    t.boolean "conjuntivitis"
+    t.boolean "cianosis"
+    t.boolean "inicio_subito"
+    t.boolean "anosmia"
+    t.boolean "disgeusia"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["paciente_id"], name: "index_sintomas_on_paciente_id"
   end
 
 end
