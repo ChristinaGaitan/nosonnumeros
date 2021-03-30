@@ -1,6 +1,13 @@
 namespace :import do
   desc "Import data from spreadsheet"
   task data: :environment do
+    puts 'Cleaning Database'
+    EnfermedadesPrevias.delete_all
+    Sintomas.delete_all
+    InformacionHospitalaria.delete_all
+    InformacionTemporal.delete_all
+    Paciente.delete_all
+
     puts 'Importing Data'
     data = Roo::Spreadsheet.open('lib/CENSO_DATOS_ABIERTOS_GENERAL_COVID_2020.xlsx') # open spreadsheet
     headers = data.row(1) # get header row
@@ -141,13 +148,22 @@ namespace :import do
 
       paciente.enfermedades_previas = EnfermedadesPrevias.new(enfermedades_hash)
 
-      puts('==================')
+      # puts('==================')
       puts(paciente.id_inicio_sintomas)
-      puts(paciente.informacion_temporal.inicio_sintomas)
-      puts(paciente.informacion_hospitalaria.institucion_tratante)
-      puts(paciente.sintomas.fiebre)
-      puts(paciente.enfermedades_previas.diabetes)
+      # puts(paciente.informacion_temporal.inicio_sintomas)
+      # puts(paciente.informacion_hospitalaria.institucion_tratante)
+      # puts(paciente.sintomas.fiebre)
+      # puts(paciente.enfermedades_previas.diabetes)
       paciente.save!
     end
+
+    total = Total.new
+    total.fecha = Time.now
+    total.total = Paciente.count
+    puts('=============================================')
+    puts(total.fecha)
+    puts(total.total)
+    total.save!
+
   end
 end
